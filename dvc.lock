@@ -1,26 +1,84 @@
 schema: '2.0'
 stages:
   preprocess:
-    cmd: python src/preprocess.py
+    cmd: python src/pipeline/preprocess.py --input data/raw/dataset.csv --output
+      data/processed/digits_preprocessed.csv
     deps:
     - path: data/raw/dataset.csv
       hash: md5
       md5: 506baf5cff0902edb9184db83963156c
       size: 497173
-    - path: src/preprocess.py
+    - path: src/pipeline/preprocess.py
       hash: md5
-      md5: 2ce09b11c8bdd4a823e8b129cd111f8c
-      size: 1025
+      md5: c439f49cf7cfb219ea626f3400a1881e
+      size: 1809
+    outs:
+    - path: data/processed/digits_preprocessed.csv
+      hash: md5
+      md5: 506baf5cff0902edb9184db83963156c
+      size: 497173
+  features:
+    cmd: python src/pipeline/features.py --input 
+      data/processed/digits_preprocessed.csv --output 
+      data/processed/digits_features.csv
+    deps:
+    - path: data/processed/digits_preprocessed.csv
+      hash: md5
+      md5: 506baf5cff0902edb9184db83963156c
+      size: 497173
+    - path: src/pipeline/features.py
+      hash: md5
+      md5: 0ffe64eee9ea45724760aec29a90cf25
+      size: 1907
+    outs:
+    - path: data/processed/digits_features.csv
+      hash: md5
+      md5: d46da998cadd449927cca7fb8a9750c9
+      size: 556174
+  validate:
+    cmd: python src/pipeline/validate.py --input 
+      data/processed/digits_features.csv --report 
+      data/validated/validation_report.json
+    deps:
+    - path: data/processed/digits_features.csv
+      hash: md5
+      md5: d46da998cadd449927cca7fb8a9750c9
+      size: 556174
+    - path: src/pipeline/validate.py
+      hash: md5
+      md5: b14d88a21422afac323af75c7b77be81
+      size: 3505
+    outs:
+    - path: data/validated/validation_report.json
+      hash: md5
+      md5: 09c9838ff76a52340275a5c636c96707
+      size: 237
+  split:
+    cmd: python src/pipeline/split.py --input data/processed/digits_features.csv
+      --train data/processed/train.csv --test data/processed/test.csv
+    deps:
+    - path: data/processed/digits_features.csv
+      hash: md5
+      md5: d46da998cadd449927cca7fb8a9750c9
+      size: 556174
+    - path: data/validated/validation_report.json
+      hash: md5
+      md5: 09c9838ff76a52340275a5c636c96707
+      size: 237
+    - path: src/pipeline/split.py
+      hash: md5
+      md5: 1caac45f6b1450bd30a68e7203430e2b
+      size: 1857
     params:
       params.yaml:
-        preprocess.random_state: 42
-        preprocess.test_size: 0.2
+        split.random_state: 42
+        split.test_size: 0.2
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: bb4a2051f045820b0ceb75d4bb654c33
-      size: 442760
+      md5: d1df6b1113e74e3977264224bfc516ec
+      size: 485247
     - path: data/processed/train.csv
       hash: md5
-      md5: 3ef91112a20a88f0fa27a8ffe576d604
-      size: 1765303
+      md5: a6c952a059f017c59df43b3e2f6a854c
+      size: 1934580

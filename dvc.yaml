@@ -1,12 +1,37 @@
 stages:
   preprocess:
-    cmd: python src/preprocess.py
+    cmd: python src/pipeline/preprocess.py --input data/raw/dataset.csv --output data/processed/digits_preprocessed.csv
     deps:
-      - src/preprocess.py
       - data/raw/dataset.csv
+      - src/pipeline/preprocess.py
+    outs:
+      - data/processed/digits_preprocessed.csv
+
+  features:
+    cmd: python src/pipeline/features.py --input data/processed/digits_preprocessed.csv --output data/processed/digits_features.csv
+    deps:
+      - data/processed/digits_preprocessed.csv
+      - src/pipeline/features.py
+    outs:
+      - data/processed/digits_features.csv
+
+  validate:
+    cmd: python src/pipeline/validate.py --input data/processed/digits_features.csv --report data/validated/validation_report.json
+    deps:
+      - data/processed/digits_features.csv
+      - src/pipeline/validate.py
+    outs:
+      - data/validated/validation_report.json
+
+  split:
+    cmd: python src/pipeline/split.py --input data/processed/digits_features.csv --train data/processed/train.csv --test data/processed/test.csv
+    deps:
+      - data/processed/digits_features.csv
+      - data/validated/validation_report.json
+      - src/pipeline/split.py
     params:
-      - preprocess.test_size
-      - preprocess.random_state
+      - split.test_size
+      - split.random_state
     outs:
       - data/processed/train.csv
       - data/processed/test.csv
