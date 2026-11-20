@@ -1,3 +1,6 @@
-dvc>=3,<4
 pandas
 scikit-learn
+dvc
+pyarrow
+feast
+mlflow
