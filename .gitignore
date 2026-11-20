@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 mlruns/
 .ipynb_checkpoints/
+feature_repo/data/
+data/features/
+data/processed/*.csv
