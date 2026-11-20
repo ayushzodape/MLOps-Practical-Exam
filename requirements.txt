@@ -4,3 +4,5 @@ dvc
 pyarrow
 feast
 mlflow
+pyyaml
+
